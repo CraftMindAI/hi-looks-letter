@@ -60,25 +60,25 @@ export default async function Projects() {
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) =>
             project.images.length > 0 ? (
               <div
                 key={project.id}
-                className="relative overflow-hidden rounded-xl border border-black/5 bg-brand-tint/30"
+                className="overflow-hidden rounded-xl border border-black/5 bg-white"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={project.images[0]}
-                  alt={project.name}
-                  className="h-24 w-full object-cover"
-                />
-                {project.images.length > 1 && (
-                  <span className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-semibold text-white">
-                    +{project.images.length - 1}
-                  </span>
-                )}
-                <p className="truncate px-3 py-2 text-center text-xs font-semibold text-foreground/80">
+                <div className="flex snap-x snap-mandatory gap-2 overflow-x-auto bg-brand-tint/30 p-2">
+                  {project.images.map((src, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      key={i}
+                      src={src}
+                      alt={`${project.name} ${i + 1}`}
+                      className="h-56 w-auto shrink-0 snap-center rounded-lg object-contain"
+                    />
+                  ))}
+                </div>
+                <p className="truncate px-4 py-3 text-center text-sm font-semibold text-foreground/80">
                   {project.name}
                 </p>
               </div>
