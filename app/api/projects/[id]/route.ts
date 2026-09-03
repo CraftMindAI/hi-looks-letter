@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ObjectId } from "mongodb";
-import { getDb } from "@/lib/mongodb";
+import { getAdminDb } from "@/lib/firebaseAdmin";
 import { requireAdmin } from "@/lib/requireAdmin";
-
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
-const MAX_IMAGES = 10;
+import {
+  MAX_IMAGES,
+  fileToDataUri,
+  validateImageFiles,
+  validateTotalSize,
+} from "@/lib/projectImages";
 
 export async function POST(
   request: NextRequest,
@@ -14,16 +16,11 @@ export async function POST(
   if ("error" in auth) return auth.error;
 
   const { id } = await params;
+  const db = getAdminDb();
+  const docRef = db.collection("projects").doc(id);
+  const doc = await docRef.get();
 
-  if (!ObjectId.isValid(id)) {
-    return NextResponse.json({ error: "Invalid project id." }, { status: 400 });
-  }
-
-  const db = await getDb();
-  const collection = db.collection("projects");
-  const doc = await collection.findOne({ _id: new ObjectId(id) });
-
-  if (!doc) {
+  if (!doc.exists) {
     return NextResponse.json({ error: "Project not found." }, { status: 404 });
   }
 
@@ -34,34 +31,27 @@ export async function POST(
     return NextResponse.json({ error: "At least one image is required." }, { status: 400 });
   }
 
-  const existingImages: string[] = doc.images ?? (doc.image ? [doc.image] : []);
+  const existingImages: string[] = doc.data()?.images ?? [];
   if (existingImages.length + files.length > MAX_IMAGES) {
     return NextResponse.json(
       { error: `A project can have at most ${MAX_IMAGES} images.` },
       { status: 400 }
     );
   }
-  for (const file of files) {
-    if (!file.type.startsWith("image/")) {
-      return NextResponse.json({ error: "All files must be images." }, { status: 400 });
-    }
-    if (file.size > MAX_IMAGE_SIZE) {
-      return NextResponse.json({ error: "Each image must be smaller than 5MB." }, { status: 400 });
-    }
+  const validationError = validateImageFiles(files);
+  if (validationError) {
+    return NextResponse.json({ error: validationError }, { status: 400 });
   }
 
-  const newImages = await Promise.all(
-    files.map(async (file) => {
-      const buffer = Buffer.from(await file.arrayBuffer());
-      return `data:${file.type};base64,${buffer.toString("base64")}`;
-    })
-  );
+  const newImages = await Promise.all(files.map(fileToDataUri));
+
+  const sizeError = validateTotalSize(existingImages, newImages);
+  if (sizeError) {
+    return NextResponse.json({ error: sizeError }, { status: 400 });
+  }
 
   const images = [...existingImages, ...newImages];
-  await collection.updateOne(
-    { _id: new ObjectId(id) },
-    { $set: { images }, $unset: { image: "" } }
-  );
+  await docRef.update({ images });
 
   return NextResponse.json({ success: true, images });
 }
@@ -74,24 +64,19 @@ export async function DELETE(
   if ("error" in auth) return auth.error;
 
   const { id } = await params;
-
-  if (!ObjectId.isValid(id)) {
-    return NextResponse.json({ error: "Invalid project id." }, { status: 400 });
-  }
+  const db = getAdminDb();
+  const docRef = db.collection("projects").doc(id);
 
   const imageIndexParam = request.nextUrl.searchParams.get("imageIndex");
-  const db = await getDb();
-  const collection = db.collection("projects");
 
   if (imageIndexParam !== null) {
-    const imageIndex = Number(imageIndexParam);
-    const doc = await collection.findOne({ _id: new ObjectId(id) });
-
-    if (!doc) {
+    const doc = await docRef.get();
+    if (!doc.exists) {
       return NextResponse.json({ error: "Project not found." }, { status: 404 });
     }
 
-    const images: string[] = doc.images ?? (doc.image ? [doc.image] : []);
+    const images: string[] = doc.data()?.images ?? [];
+    const imageIndex = Number(imageIndexParam);
     if (!Number.isInteger(imageIndex) || imageIndex < 0 || imageIndex >= images.length) {
       return NextResponse.json({ error: "Invalid image index." }, { status: 400 });
     }
@@ -99,22 +84,19 @@ export async function DELETE(
     const nextImages = images.filter((_, i) => i !== imageIndex);
 
     if (nextImages.length === 0) {
-      await collection.deleteOne({ _id: new ObjectId(id) });
+      await docRef.delete();
       return NextResponse.json({ success: true, deletedProject: true });
     }
 
-    await collection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { images: nextImages }, $unset: { image: "" } }
-    );
+    await docRef.update({ images: nextImages });
     return NextResponse.json({ success: true, images: nextImages });
   }
 
-  const result = await collection.deleteOne({ _id: new ObjectId(id) });
-
-  if (result.deletedCount === 0) {
+  const doc = await docRef.get();
+  if (!doc.exists) {
     return NextResponse.json({ error: "Project not found." }, { status: 404 });
   }
 
+  await docRef.delete();
   return NextResponse.json({ success: true, deletedProject: true });
 }

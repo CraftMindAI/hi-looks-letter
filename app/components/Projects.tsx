@@ -1,4 +1,4 @@
-import { getDb } from "@/lib/mongodb";
+import { getAdminDb } from "@/lib/firebaseAdmin";
 
 const FALLBACK_PROJECTS = [
   "Anna University",
@@ -22,19 +22,15 @@ type ProjectItem = {
 
 async function getProjects(): Promise<ProjectItem[]> {
   try {
-    const db = await getDb();
-    const docs = await db
-      .collection("projects")
-      .find()
-      .sort({ createdAt: -1 })
-      .toArray();
+    const db = getAdminDb();
+    const snapshot = await db.collection("projects").orderBy("createdAt", "desc").get();
 
-    if (docs.length === 0) return FALLBACK_PROJECTS;
+    if (snapshot.empty) return FALLBACK_PROJECTS;
 
-    return docs.map((doc) => ({
-      id: doc._id.toString(),
-      name: doc.name,
-      images: doc.images ?? (doc.image ? [doc.image] : []),
+    return snapshot.docs.map((doc) => ({
+      id: doc.id,
+      name: doc.data().name,
+      images: doc.data().images ?? [],
     }));
   } catch {
     return FALLBACK_PROJECTS;
