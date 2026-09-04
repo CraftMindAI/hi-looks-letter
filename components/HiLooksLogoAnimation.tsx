@@ -69,6 +69,11 @@ export default function HiLooksLogoAnimation({
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
 
+    // Paint white immediately so the canvas never shows its default
+    // black backing store before the first frame image has loaded.
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     // Helper to draw a specific frame onto canvas maintaining 16:9 contain
     const renderFrame = (
       img: HTMLImageElement,
@@ -325,7 +330,7 @@ export default function HiLooksLogoAnimation({
     >
       <canvas
         ref={canvasRef}
-        className="block h-auto w-full max-w-[760px] xl:max-w-[820px] aspect-[16/9] object-contain mix-blend-multiply"
+        className="block h-auto w-full max-w-[760px] xl:max-w-[820px] aspect-[16/9] object-contain mix-blend-multiply bg-white"
         style={{
           WebkitMaskImage:
             "radial-gradient(ellipse 96% 94% at 50% 50%, black 82%, transparent 100%)",

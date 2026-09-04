@@ -1,34 +1,46 @@
 const SERVICES = [
   {
     title: "LED Video Wall",
+    description:
+      "High-brightness, seamless LED video walls built for storefronts, events, and stages that demand vivid, attention-grabbing visuals.",
     icon: (
       <path d="M3 5h18v11H3z M3 20h18 M8 16v4 M16 16v4" />
     ),
   },
   {
     title: "LED Signs",
+    description:
+      "Energy-efficient LED signboards engineered for 24/7 visibility, crisp brightness, and long-lasting outdoor durability.",
     icon: <path d="M9 18h6 M10 22h4 M12 2a6 6 0 0 0-4 10.5c.6.6 1 1.3 1 2.5h6c0-1.2.4-1.9 1-2.5A6 6 0 0 0 12 2Z" />,
   },
   {
     title: "NEON Signs",
+    description:
+      "Custom-bent neon and LED-neon signage that brings a vibrant, retro glow to storefronts, cafes, and interior branding.",
     icon: (
       <path d="M7 3h10l-3 6h3l-7 12v-8H7l3-6H7z" />
     ),
   },
   {
     title: "ACP Cladding Works",
+    description:
+      "Premium aluminium composite panel cladding for building facades and signboard structures, finished for weatherproof durability.",
     icon: (
       <path d="M4 21V8l8-5 8 5v13 M4 21h16 M9 21v-6h6v6" />
     ),
   },
   {
     title: "Metal Signs",
+    description:
+      "Precision-cut and finished metal signage with a premium, durable look for corporate offices, buildings, and outdoor branding.",
     icon: (
       <path d="M12 2 3 6l9 4 9-4-9-4Z M3 6v12l9 4 9-4V6 M12 10v12" />
     ),
   },
   {
     title: "Indoor & Outdoor Decorative Signage",
+    description:
+      "Custom decorative signage solutions tailored for interiors and exteriors, blending aesthetics with lasting quality.",
     icon: (
       <path d="M4 4h16v16H4z M4 9h16 M9 9v11" />
     ),
@@ -76,6 +88,9 @@ export default function Services() {
               <h4 className="mt-4 text-lg font-semibold text-foreground">
                 {service.title}
               </h4>
+              <p className="mt-2 text-sm leading-relaxed text-foreground/70">
+                {service.description}
+              </p>
             </div>
           ))}
         </div>
