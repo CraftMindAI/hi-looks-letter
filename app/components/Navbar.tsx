@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 const NAV_LINKS = [
@@ -18,13 +19,15 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-black/5 bg-white/90 backdrop-blur">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8">
-        <a href="#" className="flex items-baseline gap-2">
-          <span className="text-2xl font-extrabold tracking-tight text-brand">
-            HI-LOOK&apos;S
-          </span>
-          <span className="text-lg font-semibold tracking-wide text-foreground">
-            LETTERS
-          </span>
+        <a href="#" className="flex items-center">
+          <Image
+            src="/hi-logo.png"
+            alt="Hi-Look's Letters"
+            width={780}
+            height={320}
+            priority
+            className="h-9 w-auto sm:h-10"
+          />
         </a>
 
         <ul className="hidden items-center gap-7 text-sm font-medium md:flex">

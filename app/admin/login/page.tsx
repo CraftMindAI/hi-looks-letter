@@ -1,10 +1,12 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   browserLocalPersistence,
   browserSessionPersistence,
+  sendPasswordResetEmail,
   setPersistence,
   signInWithEmailAndPassword,
 } from "firebase/auth";
@@ -52,9 +54,38 @@ export default function AdminLoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({});
+  const [resetSending, setResetSending] = useState(false);
+  const [resetMessage, setResetMessage] = useState<string | null>(null);
+  const [resetError, setResetError] = useState<string | null>(null);
+  const [resetLinkSent, setResetLinkSent] = useState(false);
 
   const emailError = touched.email ? validateEmail(email) : null;
   const passwordError = touched.password ? validatePassword(password) : null;
+
+  const handleForgotPassword = async () => {
+    if (resetLinkSent || resetSending) return;
+
+    setResetMessage(null);
+    setResetError(null);
+
+    const emailErr = validateEmail(email);
+    if (emailErr) {
+      setTouched((t) => ({ ...t, email: true }));
+      setResetError("Enter your email above first, then click Forgot password.");
+      return;
+    }
+
+    setResetSending(true);
+    try {
+      await sendPasswordResetEmail(auth, email.trim());
+      setResetMessage(`Password reset link sent to ${email.trim()}.`);
+      setResetLinkSent(true);
+    } catch (err) {
+      setResetError(friendlyError(err));
+    } finally {
+      setResetSending(false);
+    }
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -90,9 +121,14 @@ export default function AdminLoginPage() {
             className="pointer-events-none absolute -bottom-20 -left-10 h-52 w-52 rounded-full bg-black/10"
           />
 
-          <div className="relative">
-            <p className="text-2xl font-extrabold leading-tight">HI-LOOK&apos;S</p>
-            <p className="text-sm font-medium tracking-widest text-white/70">LETTERS</p>
+          <div className="relative inline-block rounded-lg bg-white p-2">
+            <Image
+              src="/hi-logo.png"
+              alt="Hi-Look's Letters"
+              width={780}
+              height={320}
+              className="h-9 w-auto"
+            />
           </div>
 
           <div className="relative">
@@ -143,7 +179,12 @@ export default function AdminLoginPage() {
                   name="email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setResetLinkSent(false);
+                    setResetMessage(null);
+                    setResetError(null);
+                  }}
                   onBlur={() => setTouched((t) => ({ ...t, email: true }))}
                   aria-invalid={!!emailError}
                   autoComplete="username"
@@ -229,6 +270,30 @@ export default function AdminLoginPage() {
                 {error}
               </p>
             )}
+
+            {resetMessage && (
+              <p className="rounded-lg bg-green-50 px-3 py-2 text-sm font-medium text-green-700">
+                {resetMessage}
+              </p>
+            )}
+            {resetError && (
+              <p className="rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600">
+                {resetError}
+              </p>
+            )}
+
+            <button
+              type="button"
+              onClick={handleForgotPassword}
+              disabled={resetSending || resetLinkSent}
+              className="text-center text-sm font-semibold text-brand hover:underline disabled:cursor-not-allowed disabled:text-foreground/40 disabled:no-underline"
+            >
+              {resetSending
+                ? "Sending reset link..."
+                : resetLinkSent
+                  ? "Reset link sent"
+                  : "Forgot password?"}
+            </button>
 
             <button
               type="submit"

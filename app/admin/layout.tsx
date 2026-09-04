@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
@@ -63,10 +64,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="flex min-h-screen bg-brand-tint/20">
       <aside className="hidden w-56 shrink-0 flex-col border-r border-black/5 bg-white sm:flex">
         <div className="border-b border-black/5 px-5 py-5">
-          <p className="text-lg font-extrabold leading-tight text-brand">
-            HI-LOOK&apos;S
-          </p>
-          <p className="text-xs font-medium tracking-widest text-foreground/50">
+          <Image
+            src="/hi-logo.png"
+            alt="Hi-Look's Letters"
+            width={780}
+            height={320}
+            className="h-8 w-auto"
+          />
+          <p className="mt-1 text-xs font-medium tracking-widest text-foreground/50">
             ADMIN PANEL
           </p>
         </div>
@@ -111,20 +116,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex items-center justify-between border-b border-black/5 bg-white px-5 py-3.5 sm:px-8">
-          <p className="text-base font-extrabold text-brand sm:hidden">
-            HI-LOOK&apos;S <span className="font-normal text-foreground/70">ADMIN</span>
-          </p>
+          <Image
+            src="/hi-logo.png"
+            alt="Hi-Look's Letters"
+            width={780}
+            height={320}
+            className="h-7 w-auto sm:hidden"
+          />
           <div className="hidden text-sm font-medium text-foreground/50 sm:block">
             Projects
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-tint text-sm font-bold text-brand">
-                {initial}
-              </div>
-              <span className="hidden text-sm text-foreground/60 sm:inline">
-                {user.email}
-              </span>
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-tint text-sm font-bold text-brand">
+              {initial}
             </div>
             <button
               type="button"

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const QUICK_LINKS = [
   { href: "#about", label: "About" },
   { href: "#vision", label: "Vision" },
@@ -22,10 +24,15 @@ export default function Footer() {
     <footer className="bg-brand-dark text-white">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-5 py-12 sm:grid-cols-2 sm:px-8 md:grid-cols-4">
         <div>
-          <p className="text-xl font-extrabold">
-            HI-LOOK&apos;S{" "}
-            <span className="font-normal opacity-80">LETTERS</span>
-          </p>
+          <div className="inline-block rounded-lg bg-white p-2">
+            <Image
+              src="/hi-logo.png"
+              alt="Hi-Look's Letters"
+              width={780}
+              height={320}
+              className="h-8 w-auto"
+            />
+          </div>
           <p className="mt-3 text-sm leading-relaxed text-white/70">
             Professional sign makers since 1987-35+ years of experience
             promoting businesses with signage that lasts.

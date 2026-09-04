@@ -118,6 +118,33 @@ export default function HiLooksLogoAnimation({
       ctx.drawImage(img, drawX, drawY, drawW, drawH);
       ctx.filter = "none";
 
+      // The source photos sit on a flat studio backdrop that isn't quite
+      // pure white, so it shows up as a visible rectangle against the
+      // page. Clip any near-white pixel straight to #ffffff so — combined
+      // with mix-blend-multiply on the canvas element — the backdrop
+      // disappears into the page instead of leaving a frame.
+      const physX = Math.round(drawX * dpr);
+      const physY = Math.round(drawY * dpr);
+      const physW = Math.round(drawW * dpr);
+      const physH = Math.round(drawH * dpr);
+      if (physW > 0 && physH > 0) {
+        const imageData = ctx.getImageData(physX, physY, physW, physH);
+        const data = imageData.data;
+        const WHITE_THRESHOLD = 232;
+        for (let i = 0; i < data.length; i += 4) {
+          if (
+            data[i] > WHITE_THRESHOLD &&
+            data[i + 1] > WHITE_THRESHOLD &&
+            data[i + 2] > WHITE_THRESHOLD
+          ) {
+            data[i] = 255;
+            data[i + 1] = 255;
+            data[i + 2] = 255;
+          }
+        }
+        ctx.putImageData(imageData, physX, physY);
+      }
+
       // Subtle bright blink/highlight on the logo only at the very end
       // Uses 'screen' composite mode: pure white (255) remains 100% white,
       // so the white background never blinks, while red/3D logo catch a bright shine.
