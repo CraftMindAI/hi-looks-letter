@@ -119,10 +119,13 @@ export default function HiLooksLogoAnimation({
       ctx.filter = "none";
 
       // The source photos sit on a flat studio backdrop that isn't quite
-      // pure white, so it shows up as a visible rectangle against the
-      // page. Clip any near-white pixel straight to #ffffff so — combined
-      // with mix-blend-multiply on the canvas element — the backdrop
-      // disappears into the page instead of leaving a frame.
+      // pure white and fades unevenly toward the corners/edges, so it
+      // shows up as a visible rectangular frame against the page. A hard
+      // brightness cutoff still leaves the darker corners (down to ~215)
+      // untouched, so ramp near-white pixels smoothly toward #ffffff
+      // instead — this fades the whole backdrop out (including the
+      // corners) with no hard edge, while leaving the red/dark logo
+      // pixels (well below the ramp's floor) untouched.
       const physX = Math.round(drawX * dpr);
       const physY = Math.round(drawY * dpr);
       const physW = Math.round(drawW * dpr);
@@ -130,16 +133,22 @@ export default function HiLooksLogoAnimation({
       if (physW > 0 && physH > 0) {
         const imageData = ctx.getImageData(physX, physY, physW, physH);
         const data = imageData.data;
-        const WHITE_THRESHOLD = 232;
+        const WHITE_FLOOR = 195;
+        const WHITE_CEIL = 245;
         for (let i = 0; i < data.length; i += 4) {
-          if (
-            data[i] > WHITE_THRESHOLD &&
-            data[i + 1] > WHITE_THRESHOLD &&
-            data[i + 2] > WHITE_THRESHOLD
-          ) {
-            data[i] = 255;
-            data[i + 1] = 255;
-            data[i + 2] = 255;
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          const minChannel = Math.min(r, g, b);
+          if (minChannel > WHITE_FLOOR) {
+            const t = Math.min(
+              1,
+              (minChannel - WHITE_FLOOR) / (WHITE_CEIL - WHITE_FLOOR)
+            );
+            const whiten = Math.sqrt(t);
+            data[i] = r + (255 - r) * whiten;
+            data[i + 1] = g + (255 - g) * whiten;
+            data[i + 2] = b + (255 - b) * whiten;
           }
         }
         ctx.putImageData(imageData, physX, physY);

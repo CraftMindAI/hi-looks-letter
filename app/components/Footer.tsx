@@ -97,6 +97,16 @@ export default function Footer() {
                 www.hilooksletters.com
               </a>
             </li>
+            <li>
+              <a
+                href="https://www.instagram.com/hilooks_chennai?igsi=b3AxMDNhbDJtM2lz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white"
+              >
+                @hilooks_chennai
+              </a>
+            </li>
           </ul>
         </div>
       </div>
