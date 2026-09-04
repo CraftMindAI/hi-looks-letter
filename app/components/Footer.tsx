@@ -23,11 +23,12 @@ export default function Footer() {
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-5 py-12 sm:grid-cols-2 sm:px-8 md:grid-cols-4">
         <div>
           <p className="text-xl font-extrabold">
-            HI-LOOK&apos;S <span className="font-normal opacity-80">LETTERS</span>
+            HI-LOOK&apos;S{" "}
+            <span className="font-normal opacity-80">LETTERS</span>
           </p>
           <p className="mt-3 text-sm leading-relaxed text-white/70">
-            Professional sign makers since 1987 &mdash; 35+ years of
-            experience promoting businesses with signage that lasts.
+            Professional sign makers since 1987-35+ years of experience
+            promoting businesses with signage that lasts.
           </p>
         </div>
 
@@ -96,12 +97,15 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-5 py-5 text-xs text-white/60 sm:flex-row sm:px-8">
           <p>
-            &copy; {new Date().getFullYear()} Hi-Look&apos;s Letters. All
-            rights reserved.
+            &copy; {new Date().getFullYear()} Hi-Look&apos;s Letters. All rights
+            reserved.
           </p>
           <div className="flex items-center gap-4">
             <p>Proprietor: A. Mohamed Saleem &middot; MD: A. Deen Rubiyaa</p>
-            <a href="/admin/login" className="text-white/60 underline-offset-2 hover:text-white hover:underline">
+            <a
+              href="/admin/login"
+              className="text-white/60 underline-offset-2 hover:text-white hover:underline"
+            >
               Admin Login
             </a>
           </div>

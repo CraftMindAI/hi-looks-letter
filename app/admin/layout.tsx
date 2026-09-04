@@ -7,7 +7,6 @@ import { onAuthStateChanged, signOut, type User } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
 const NAV_ITEMS = [
-  { href: "/admin", label: "Dashboard", icon: "M3 12l2-2 7-7 7 7 2 2M5 10v10h14V10 M9 20v-6h6v6" },
   { href: "/admin/projects", label: "Projects", icon: "M4 4h16v16H4z M4 9h16 M9 9v11" },
 ];
 
@@ -32,6 +31,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return () => unsubscribe();
   }, [isLoginPage, router]);
 
+  useEffect(() => {
+    if (pathname === "/admin") {
+      router.replace("/admin/projects");
+    }
+  }, [pathname, router]);
+
   const handleLogout = async () => {
     await signOut(auth);
     router.replace("/admin/login");
@@ -41,7 +46,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return <>{children}</>;
   }
 
-  if (loading || !user) {
+  if (loading || !user || pathname === "/admin") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-brand-tint/50">
         <div className="flex flex-col items-center gap-3">
@@ -67,8 +72,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
         <nav className="flex flex-1 flex-col gap-1 p-3">
           {NAV_ITEMS.map((item) => {
-            const active =
-              item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
+            const active = pathname.startsWith(item.href);
             return (
               <Link
                 key={item.href}
@@ -111,9 +115,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             HI-LOOK&apos;S <span className="font-normal text-foreground/70">ADMIN</span>
           </p>
           <div className="hidden text-sm font-medium text-foreground/50 sm:block">
-            {NAV_ITEMS.find((item) =>
-              item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href)
-            )?.label ?? ""}
+            Projects
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">

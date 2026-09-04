@@ -63,14 +63,14 @@ export default async function Projects() {
                 key={project.id}
                 className="overflow-hidden rounded-xl border border-black/5 bg-white"
               >
-                <div className="flex snap-x snap-mandatory gap-2 overflow-x-auto bg-brand-tint/30 p-2">
+                <div className="flex snap-x snap-mandatory overflow-x-auto bg-white">
                   {project.images.map((src, i) => (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={i}
                       src={src}
                       alt={`${project.name} ${i + 1}`}
-                      className="h-56 w-auto shrink-0 snap-center rounded-lg object-contain"
+                      className="h-40 w-full shrink-0 snap-center object-contain p-4"
                     />
                   ))}
                 </div>
