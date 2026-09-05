@@ -107,6 +107,7 @@ export default function Footer() {
                 @hilooks_chennai
               </a>
             </li>
+            <li>🫰 _ Partner SRA</li>
           </ul>
         </div>
       </div>

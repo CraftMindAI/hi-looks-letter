@@ -84,6 +84,7 @@ export default function Contact() {
                 @hilooks_chennai
               </a>
             </li>
+            <li className="text-foreground/80">🫰 _ Partner SRA</li>
           </ul>
         </div>
       </div>
