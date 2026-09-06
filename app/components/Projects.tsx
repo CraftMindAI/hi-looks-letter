@@ -40,6 +40,14 @@ async function getProjects(): Promise<ProjectItem[]> {
 export default async function Projects() {
   const projects = await getProjects();
 
+  const images = projects.flatMap((project) =>
+    project.images.map((src, i) => ({
+      key: `${project.id}-${i}`,
+      src,
+      alt: `${project.name} ${i + 1}`,
+    }))
+  );
+
   return (
     <section id="projects" className="bg-white py-16 sm:py-24">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
@@ -56,38 +64,34 @@ export default async function Projects() {
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) =>
-            project.images.length > 0 ? (
+        {images.length > 0 ? (
+          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {images.map((image) => (
               <div
-                key={project.id}
-                className="overflow-hidden rounded-xl border border-black/5 bg-white"
+                key={image.key}
+                className="flex h-48 items-center justify-center overflow-hidden rounded-xl bg-white sm:h-56"
               >
-                <div className="flex snap-x snap-mandatory overflow-x-auto bg-white">
-                  {project.images.map((src, i) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      key={i}
-                      src={src}
-                      alt={`${project.name} ${i + 1}`}
-                      className="h-40 w-full shrink-0 snap-center object-contain p-4"
-                    />
-                  ))}
-                </div>
-                <p className="truncate px-4 py-3 text-center text-sm font-semibold text-foreground/80">
-                  {project.name}
-                </p>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className="h-full w-full object-contain"
+                />
               </div>
-            ) : (
+            ))}
+          </div>
+        ) : (
+          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {projects.map((project) => (
               <div
                 key={project.id}
                 className="flex h-24 items-center justify-center rounded-xl border border-black/5 bg-brand-tint/30 px-4 text-center text-sm font-semibold text-foreground/80 transition-colors hover:border-brand/30 hover:text-brand"
               >
                 {project.name}
               </div>
-            )
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
