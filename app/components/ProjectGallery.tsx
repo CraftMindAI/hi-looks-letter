@@ -50,7 +50,7 @@ export default function ProjectGallery({ images }: { images: GalleryImage[] }) {
             type="button"
             aria-label="Close"
             onClick={() => setActiveIndex(null)}
-            className="absolute right-4 top-4 text-3xl text-white/80 hover:text-white"
+            className="absolute right-4 top-4 cursor-pointer text-3xl text-white/80 hover:text-white"
           >
             &times;
           </button>
@@ -62,7 +62,7 @@ export default function ProjectGallery({ images }: { images: GalleryImage[] }) {
               e.stopPropagation();
               showPrev();
             }}
-            className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-2xl text-white hover:bg-white/20 sm:left-6"
+            className="absolute left-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-white/10 p-3 text-2xl text-white hover:bg-white/20 sm:left-6"
           >
             &#8592;
           </button>
@@ -72,7 +72,7 @@ export default function ProjectGallery({ images }: { images: GalleryImage[] }) {
             src={images[activeIndex].src}
             alt={images[activeIndex].alt}
             onClick={(e) => e.stopPropagation()}
-            className="max-h-[85vh] max-w-[90vw] object-contain"
+            className="max-h-[45vh] max-w-[45vw] object-contain"
           />
 
           <button
@@ -82,7 +82,7 @@ export default function ProjectGallery({ images }: { images: GalleryImage[] }) {
               e.stopPropagation();
               showNext();
             }}
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-2xl text-white hover:bg-white/20 sm:right-6"
+            className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-white/10 p-3 text-2xl text-white hover:bg-white/20 sm:right-6"
           >
             &#8594;
           </button>
