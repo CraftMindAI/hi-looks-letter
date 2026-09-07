@@ -1,4 +1,5 @@
 import { getAdminDb } from "@/lib/firebaseAdmin";
+import ProjectGallery from "@/app/components/ProjectGallery";
 
 const FALLBACK_PROJECTS = [
   "Anna University",
@@ -65,21 +66,7 @@ export default async function Projects() {
         </div>
 
         {images.length > 0 ? (
-          <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {images.map((image) => (
-              <div
-                key={image.key}
-                className="flex h-48 items-center justify-center overflow-hidden rounded-xl bg-white sm:h-56"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="h-full w-full object-contain"
-                />
-              </div>
-            ))}
-          </div>
+          <ProjectGallery images={images} />
         ) : (
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {projects.map((project) => (
