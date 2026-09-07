@@ -62,7 +62,7 @@ export default function ProjectGallery({ images }: { images: GalleryImage[] }) {
               e.stopPropagation();
               showPrev();
             }}
-            className="absolute left-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-white/10 p-3 text-2xl text-white hover:bg-white/20 sm:left-6"
+            className="absolute left-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-white/10 p-1.5 text-sm text-white hover:bg-white/20 sm:left-6 sm:p-3 sm:text-2xl"
           >
             &#8592;
           </button>
@@ -82,7 +82,7 @@ export default function ProjectGallery({ images }: { images: GalleryImage[] }) {
               e.stopPropagation();
               showNext();
             }}
-            className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-white/10 p-3 text-2xl text-white hover:bg-white/20 sm:right-6"
+            className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-white/10 p-1.5 text-sm text-white hover:bg-white/20 sm:right-6 sm:p-3 sm:text-2xl"
           >
             &#8594;
           </button>
